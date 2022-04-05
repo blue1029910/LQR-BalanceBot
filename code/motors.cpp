@@ -1,8 +1,10 @@
 #include "Arduino.h"
 #include "motors.h"
 
-
-extern volatile float left_encoder_count =0;
+//定義變數(使用extern vloatile)
+//extern(可以同時宣告不同程式裡的變數,但不能用來定義)
+//volatile(為一關鍵字,加在變數的前面,被volatile宣告的變數 將不會使用最佳化編譯)
+extern volatile float left_encoder_count =0; 
 extern volatile float right_encoder_count=0;
 extern volatile float left_RPM=0, right_RPM=0, left_prev_count=0, right_prev_count=0;
 
@@ -12,8 +14,8 @@ extern float pwm_left_offset= 0;
 extern float encoder_set_point = 0;
 extern float velocity_set_point = 0;
 
-extern float average_theta = 0;
-extern float average_RPM = 0;
+extern float average_theta = 0; //轉動的角度
+extern float average_RPM = 0; //轉速
 
 extern float v[2] = {0};
 extern float u[2] = {0};
@@ -32,7 +34,7 @@ extern float u[2] = {0};
 void update_encoder_states()
 {
  
-   // Make a local copy of the global encoder count
+   // Make a local copy of the global encoder count (先將全域變數換成區域變數)
   volatile float left_current_count = left_encoder_count;
   volatile float right_current_count = right_encoder_count;
   
@@ -40,7 +42,7 @@ void update_encoder_states()
   // RPS =   __________________________________________
   //          (Change in time --> 5ms) * (PPR --> 540)
   
-  left_RPM  = (float)((left_current_count - left_prev_count)  *  RPM_radian_converter);      
+  left_RPM  = (float)((left_current_count - left_prev_count)  *  RPM_radian_converter);   
   right_RPM = (float)((right_current_count - right_prev_count)*  RPM_radian_converter);    
 
   
@@ -54,7 +56,7 @@ void update_encoder_states()
   //yaw_dot = (yaw - previous_yaw)*one_by_dT;
 
   
-  average_theta = ((left_current_count + right_current_count)*0.0116); // 2pi/540
+  average_theta = ((left_current_count + right_current_count)*0.0116); // 2pi/540 
 
   average_RPM = (left_RPM + right_RPM)*0.5; 
 }
